@@ -57,5 +57,5 @@ class Server(ServerListenable):
     def handle_aux(self,req,connection):
         pass
 
-server=Server(None,80)
+server=Server("",80)
 server.run()
