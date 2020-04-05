@@ -56,8 +56,14 @@ class Server(ServerListenable):
     def handle_post(self,data,connection):
         pass
     def handle_get(self,data,connection):
-        p=open("index.html")
-        self.send_file_headers(connection,"index.html")
+        location="pages/"+data["reqlocation"]
+        if os.path.isdir(location): ## Server index.html from a directory
+            if location[-1]=="/":
+                location+="index.html"
+            else:
+                location+="/index.html"
+        p=open(location)
+        self.send_file_headers(connection,location)
         connection.send(p.read().encode())
         p.close()
         connection.close()
