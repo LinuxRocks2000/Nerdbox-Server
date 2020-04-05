@@ -1,5 +1,7 @@
 import socket
 import json
+import mimetypes
+import os
 class ServerListenable:
     def __init__(self,host,port):
         self.sckt=socket.socket()
@@ -43,6 +45,11 @@ class ServerListenable:
         if toreturn["reqtype"]=="POST":
             toreturn["data"]=json.loads(copy[13])
         return toreturn
+    def send_file_headers(self, connection, request_file):
+        connection.send("HTTP/1.0 200 OK\n".encode())
+        bork = "Content-Type: " + mimetypes.guess_type(request_file)[0] + "\n"
+        connection.send(bork.encode())
+        connection.send("\n".encode())
 
 
 class Server(ServerListenable):
@@ -50,7 +57,7 @@ class Server(ServerListenable):
         pass
     def handle_get(self,data,connection):
         p=open("index.html")
-        connection.send("HTTP/1.0 200 OK\n".encode())
+        self.send_file_headers(connection,"index.html")
         connection.send(p.read().encode())
         p.close()
         connection.close()
