@@ -46,9 +46,9 @@ class ServerListenable:
         if toreturn["reqtype"]=="POST":
             toreturn["data"]=json.loads(copy[13])
         return toreturn
-    def send_file_headers(self, connection, request_file):
+    def send_file_headers(self, connection, request_file=None,contenttype=None):
         connection.send("HTTP/1.0 200 OK\n".encode())
-        bork = "Content-Type: " + mimetypes.guess_type(request_file)[0] + "\n"
+        bork = "Content-Type: " + (contenttype or mimetypes.guess_type(request_file)[0]) + "\n"
         connection.send(bork.encode())
         connection.send("\n".encode())
 
@@ -72,10 +72,13 @@ class Server(ServerListenable):
         connection.close()
     def handle_get(self,data,connection):
         if data["reqlocation"][0:9]=="/CONTROLS":
-            controls.webserver_special(connection,data)
+            controls.webserver_specialized(self,connection,data)
             connection.close()
         else:
             self.send_file(data,connection)
+    def handle_post(self,data,connection):
+        if data["reqlocation"][0:9]=="/CONTROLS":
+            
     def handle_aux(self,req,connection):
         pass
 
