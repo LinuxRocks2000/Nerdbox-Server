@@ -2,6 +2,7 @@ import socket
 import json
 import mimetypes
 import os
+import controls
 class ServerListenable:
     def __init__(self,host,port):
         self.sckt=socket.socket()
@@ -55,7 +56,9 @@ class ServerListenable:
 class Server(ServerListenable):
     def handle_post(self,data,connection):
         pass
-    def handle_get(self,data,connection):
+    def send_file(self,data,connection):
+        if data["reqlocation"][0]=="/":
+            data["reqlocation"]=data["reqlocation"][1:]
         location="pages/"+data["reqlocation"]
         if os.path.isdir(location): ## Server index.html from a directory
             if location[-1]=="/":
@@ -67,8 +70,19 @@ class Server(ServerListenable):
         connection.send(p.read().encode())
         p.close()
         connection.close()
+    def handle_get(self,data,connection):
+        if data["reqlocation"][0:9]=="/CONTROLS":
+            controls.webserver_special(connection,data)
+            connection.close()
+        else:
+            self.send_file(data,connection)
     def handle_aux(self,req,connection):
         pass
 
-server=Server("",80)
-server.run()
+def begin():
+    print("Beginning PID file logging\n")
+    pidfile=open("PIDFILE","w+")
+    pidfile.write(str(os.getpid()))
+    server=Server("",80)
+    server.run()
+begin()
