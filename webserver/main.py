@@ -22,7 +22,9 @@ class Server(ServerListenable):
         connection.send(p.read().encode())
         p.close()
         connection.close()
+        print("Successfully initiated send_file")
     def handle_get(self,data,connection):
+        print("Loading data")
         if data["reqlocation"][0:9]=="/CONTROLS":
             controls.webserver_specialized(self,connection,data)
             connection.close()
@@ -33,7 +35,7 @@ class Server(ServerListenable):
             controls.trigger_top(self,connection,data)
             connection.close()
     def handle_aux(self,req,connection):
-        pass
+        print("Auxiliary initiated")
 
 def begin():
     print("Beginning PID file logging\n")
