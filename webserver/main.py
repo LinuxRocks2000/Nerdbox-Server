@@ -6,6 +6,9 @@ import controls
 from serverutils import ServerListenable
 
 class Server(ServerListenable):
+    def inittasks(self,host,port):
+        self.users={"pinky":["My Password",False]}
+        self.cont=controls.webserver_controller(self)
     def handle_post(self,data,connection):
         pass
     def send_file(self,data,connection):
@@ -18,24 +21,26 @@ class Server(ServerListenable):
             else:
                 location+="/index.html"
         p=open(location)
-        self.send_file_headers(connection,location)
+        self.send_file_headers(connection,mimetypes.guess_type(location)[0])
         connection.send(p.read().encode())
         p.close()
         connection.close()
-        print("Successfully initiated send_file")
     def handle_get(self,data,connection):
-        print("Loading data")
-        if data["reqlocation"][0:9]=="/CONTROLS":
-            controls.webserver_specialized(self,connection,data)
-            connection.close()
-        else:
-            self.send_file(data,connection)
+        try:
+            if len(data["reqlocation"])==9 and data["reqlocation"][0:9]=="/CONTROLS":
+                self.cont.run(data["reqlocation"][10:],data)
+                connection.close()
+            else:
+                self.send_file(data,connection)
+        except Exception as e:
+            print(str(e))
     def handle_post(self,data,connection):
-        if data["reqlocation"][0:9]=="/CONTROLS":
-            controls.trigger_top(self,connection,data)
-            connection.close()
-    def handle_aux(self,req,connection):
-        print("Auxiliary initiated")
+        try:
+            if data["reqlocation"][0:9]=="/CONTROLS":
+                self.cont.run(data["reqlocation"][10:],data)
+                connection.close()
+        except Exception as e:
+            print(str(e))
 
 def begin():
     print("Beginning PID file logging\n")

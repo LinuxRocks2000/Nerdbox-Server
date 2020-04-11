@@ -1,4 +1,4 @@
-if [ $UID == 0 ]; then
+if [ $UID = 0 ]; then
   sudo python3 webserver/main.py &
 else
   printf "You do not have root"

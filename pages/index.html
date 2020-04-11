@@ -7,5 +7,11 @@
         <h1>This is a test template index.html.</h1>
         <a href="doof.html">Doof link</a>
         <a href="blooper">Blooper link</a>
+        <script type="text/javascript">
+            var http=new XMLHttpRequest();
+            http.open('POST','CONTROLS/auth/login',true);
+            http.setRequestHeader('Content-type', 'application/json');
+            http.send('{"toot":"fort","porche":"doof"}');
+        </script>
     </body>
 </html>
