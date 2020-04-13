@@ -3,12 +3,12 @@ from serverutils import ServerListenable, Controls
 class NerdController(Controls):
     def inittasks(self):
         print("Controls initiafied")
-    def onget(self,data):
+    def on_get(self,data):
         print("On get called")
-    def onpost(self,data):
+    def on_post(self,data):
         print("On post called")
-class MyServer:
+class MyServer(ServerListenable):
     def handle_get(self,data,connection):
-        print("get called")
-n=MyServer(controls=NerdController)
+        print(data["reqlocation"])
+n=MyServer(port=8050,controls=NerdController)
 n.run()

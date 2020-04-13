@@ -1,2 +1,3 @@
 # Nerdbox-Server
-The code for an SSH server, maintained by yours truly
+
+## A minimal webserver written in pure python, using the [netutils/serverutils](https://github.com/LinuxRocks2000/netutils) package.
