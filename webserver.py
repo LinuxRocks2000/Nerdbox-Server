@@ -1,14 +1,14 @@
-from serverutils import ServerListenable, Controls
+from serverutils import TCPServer
+import importlib, os
 
-class NerdController(Controls):
-    def inittasks(self):
-        print("Controls initiafied")
-    def on_get(self,data):
-        print("On get called")
-    def on_post(self,data):
-        print("On post called")
 class MyServer(ServerListenable):
+    def handle_filereq(self,data,connection):
+        if os.path.exists(data["reqlocation"]):
+            if data["reqlocation"][-3:]==".py":
+                importlib.import_module(data["reqlocation"]
+        else:
+            Headers.broadcast_404(connection)
     def handle_get(self,data,connection):
-        print(data["reqlocation"])
-n=MyServer(port=8050,controls=NerdController)
+        self.handle_filereq(data,connection)
+n=MyServer(port=8050)
 n.run()
